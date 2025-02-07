@@ -1,7 +1,6 @@
-Docker container
-Docker file
-Jenkins
-Ci/cd 
+- Docker container
+- Docker file
+- Jenkins
+- Ci/cd 
 
-push to github
-upload to aws
+push to github and then upload to aws
