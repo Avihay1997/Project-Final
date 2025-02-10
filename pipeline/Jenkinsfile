@@ -32,7 +32,7 @@ pipeline {
         stage('Deploy to EC2') {
             steps {
                 sh """
-                scp -i $PEM_KEY Docker/Dockerfile.yml ubuntu@$EC2_HOST:$REMOTE_PATH/
+                scp -i $PEM_KEY App/Dockerfile ubuntu@$EC2_HOST:$REMOTE_PATH/
                 ssh -i $PEM_KEY ubuntu@$EC2_HOST << EOF
                 cd $REMOTE_PATH
                 Dockerfile up -d --build
