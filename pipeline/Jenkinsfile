@@ -1,0 +1,44 @@
+pipeline {
+    agent any
+
+    environment {
+        EC2_USER = "ubuntu"
+        EC2_HOST = "your-ec2-public-ip"
+        PEM_KEY = "/path/to/key.pem"
+        APP_NAME = "flask-app"
+        REMOTE_PATH = "/home/ubuntu/$APP_NAME"
+    }
+
+    stages {
+        stage('Clone Repository') {
+            steps {
+                git branch: 'main', url: 'https://github.com/your-repo.git'
+            }
+        }
+
+        stage('Build & Test Flask App') {
+            steps {
+                sh 'pip install -r requirements.txt'
+                sh 'python3 -m unittest' // Add test cases
+            }
+        }
+
+        stage('Docker Build') {
+            steps {
+                sh 'docker build -t flask-app .'
+            }
+        }
+
+        stage('Deploy to EC2') {
+            steps {
+                sh """
+                scp -i $PEM_KEY docker-compose.yml ubuntu@$EC2_HOST:$REMOTE_PATH/
+                ssh -i $PEM_KEY ubuntu@$EC2_HOST << EOF
+                cd $REMOTE_PATH
+                docker-compose up -d --build
+                EOF
+                """
+            }
+        }
+    }
+}
