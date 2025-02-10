@@ -14,15 +14,14 @@ RUN apt-get update && apt-get install -y \
 RUN python3 -m venv /venv
 ENV PATH="/venv/bin:$PATH"
 
-COPY requirements.txt .
+COPY ./App/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 WORKDIR /app
-COPY . .
+COPY App/requirements.txt .
 
 EXPOSE 8080 5000
 
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+COPY ./App/entrypoint.sh /entrypoint.sh
 
 CMD ["/entrypoint.sh"]
