@@ -17,12 +17,12 @@ ENV PATH="/venv/bin:$PATH"
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-USER jenkins
-
 WORKDIR /app
-
 COPY . .
 
-EXPOSE 5000
+EXPOSE 8080 5000
 
-CMD ["python", "app.py"]
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+CMD ["/entrypoint.sh"]
