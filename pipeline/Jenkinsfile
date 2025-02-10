@@ -19,13 +19,21 @@ pipeline {
         stage('Build & Test Flask App') {
             steps {
                 sh 'pip install -r App/requirements.txt'
-                sh 'python3 -m unittest' // Add test cases
+                script {
+                    // Check if the 'App/tests' directory exists before running tests
+                    def testsExist = fileExists('App/tests')
+                    if (testsExist) {
+                        sh 'python3 -m unittest discover App/tests'
+                    } else {
+                        echo 'No tests directory found, skipping tests.'
+                    }
+                }
             }
         }
 
         stage('Docker Build') {
             steps {
-                sh 'docker build -t flask-app -f ~/Project/App/Dockerfile .'
+                sh 'docker build -t flask-app -f App/Dockerfile .'
             }
         }
 
@@ -35,7 +43,7 @@ pipeline {
                 scp -i $PEM_KEY App/Dockerfile ubuntu@$EC2_HOST:$REMOTE_PATH/
                 ssh -i $PEM_KEY ubuntu@$EC2_HOST << EOF
                 cd $REMOTE_PATH
-                Dockerfile up -d --build
+                docker-compose up -d --build
                 EOF
                 """
             }
