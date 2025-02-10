@@ -3,8 +3,8 @@ pipeline {
 
     environment {
         EC2_USER = "ubuntu"
-        EC2_HOST = "your-ec2-public-ip"
-        PEM_KEY = "/path/to/key.pem"
+        EC2_HOST = "18.209.19.161"
+        PEM_KEY = "home/ubuntu/access_key/key_pair.pem"
         APP_NAME = "flask-app"
         REMOTE_PATH = "/home/ubuntu/$APP_NAME"
     }
@@ -12,13 +12,13 @@ pipeline {
     stages {
         stage('Clone Repository') {
             steps {
-                git branch: 'main', url: 'https://github.com/your-repo.git'
+                git branch: 'main', url: 'https://github.com/Avihay1997/Project-Final'
             }
         }
 
         stage('Build & Test Flask App') {
             steps {
-                sh 'pip install -r requirements.txt'
+                sh 'pip install -r App/requirements.txt'
                 sh 'python3 -m unittest' // Add test cases
             }
         }
@@ -32,10 +32,10 @@ pipeline {
         stage('Deploy to EC2') {
             steps {
                 sh """
-                scp -i $PEM_KEY docker-compose.yml ubuntu@$EC2_HOST:$REMOTE_PATH/
+                scp -i $PEM_KEY Docker/Dockerfile.yml ubuntu@$EC2_HOST:$REMOTE_PATH/
                 ssh -i $PEM_KEY ubuntu@$EC2_HOST << EOF
                 cd $REMOTE_PATH
-                docker-compose up -d --build
+                Dockerfile up -d --build
                 EOF
                 """
             }
