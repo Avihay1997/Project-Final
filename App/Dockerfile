@@ -14,15 +14,17 @@ RUN apt-get update && apt-get install -y \
 RUN python3 -m venv /venv
 ENV PATH="/venv/bin:$PATH"
 
-WORKDIR /app
+WORKDIR . /App
 
-COPY App/requirements.txt requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
+COPY requirements.txt /App/requirements.txt
+RUN pip install --no-cache-dir -r /App/requirements.txt
 
-COPY App/ ./
+COPY . /App/
 
-RUN chmod +x /app/entrypoint.sh
+RUN chmod +x /App/entrypoint.sh
 
 EXPOSE 8080 5000
 
-CMD ["/bin/bash", "/app/entrypoint.sh"]
+CMD ["java", "-jar", "/usr/share/jenkins/jenkins.war"]
+
+EXPOSE 8080 5000
