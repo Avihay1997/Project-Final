@@ -51,7 +51,8 @@ def home():
 
 if __name__ == '__main__':
     host = '0.0.0.0'
-    port = 5000  # Default port
+    port = 5000
+    app.run(host=host, port=port)
 
     # Check if port 5000 is in use
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
