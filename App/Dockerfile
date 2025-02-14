@@ -1,5 +1,5 @@
 # Jenkins - First stage
-FROM jenkins/jenkins:2.479.3-jdk17 AS jenkins
+FROM jenkins/jenkins:lts-jdk17 AS jenkins
 
 USER root
 
@@ -15,9 +15,9 @@ VOLUME ["/var/jenkins_home"]
 
 EXPOSE 8080 50000
 
-ENV JAVA_OPTS=""
+ENV JAVA_OPTS="-Xmx2g -Xms512m"
 
-ENTRYPOINT ["/usr/bin/tini", "--", "/usr/local/bin/jenkins.sh"]
+ENTRYPOINT ["java", "-jar", "/usr/share/jenkins/jenkins.war"]
 
 # Flask - Second stage
 FROM python:3.11-slim AS flask
