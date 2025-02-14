@@ -1,11 +1,28 @@
 version: '3.8'
 
 services:
-  flask-app:
-    build: .
+  jenkins:
+    image: jenkins/jenkins:2.479.3-jdk17
+    container_name: jenkins-server
+    ports:
+      - "8080:8080"
+      - "50000:50000"
+    volumes:
+      - jenkins_home:/var/jenkins_home
+    environment:
+      - JAVA_OPTS=-Djenkins.install.runSetupWizard=false
+    restart: on-failure
+
+  flask:
+    build:
+      context: .
+      dockerfile: Dockerfile.flask
+    container_name: flask-app
     ports:
       - "5000:5000"
-    volumes:
-      - .:/app
     environment:
       - FLASK_ENV=development
+    restart: on-failure
+
+volumes:
+  jenkins_home:
