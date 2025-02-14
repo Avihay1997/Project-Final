@@ -12,7 +12,7 @@ pipeline {
     stages {
         stage('Clone Repository') {
             steps {
-                git branch: 'main', url: 'https://github.com/Avihay1997/Project-Final'
+                git(url: 'https://github.com/Avihay1997/Project-Final', branch: 'main')
             }
         }
 
