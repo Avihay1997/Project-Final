@@ -9,9 +9,7 @@ services:
       - "50000:50000"
     volumes:
       - jenkins_home:/var/jenkins_home
-    environment:
-      - JAVA_OPTS=-Djenkins.install.runSetupWizard=false
-    restart: on-failure
+    restart: always
 
   flask:
     build:
@@ -22,7 +20,7 @@ services:
       - "5000:5000"
     environment:
       - FLASK_ENV=development
-    restart: on-failure
+    restart: always
 
 volumes:
   jenkins_home:
