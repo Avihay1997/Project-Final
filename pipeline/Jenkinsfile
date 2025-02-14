@@ -2,9 +2,9 @@ pipeline {
     agent any
 
     environment {
-        EC2_USER = "ubuntu"
-        EC2_HOST = "18.209.19.161"
-        PEM_KEY = "/home/ubuntu/access_key/key_pair.pem"
+        EC2_USER = "ec2-user"
+        EC2_HOST = "3.85.196.143"
+        PEM_KEY = "/home/ubuntu/.ssh/private_key.pem"  // Corrected secure path
         APP_NAME = "flask-app"
         REMOTE_PATH = "/home/ubuntu/$APP_NAME"
     }
