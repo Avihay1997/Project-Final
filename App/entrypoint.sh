@@ -1,4 +1,6 @@
 #!/bin/bash
-service jenkins start
+/usr/local/bin/jenkins.sh &
 
-python3 /app/app.py
+sleep 60
+
+python3 /App/app.py
