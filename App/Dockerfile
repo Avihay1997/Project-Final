@@ -20,7 +20,7 @@ ENV JAVA_OPTS="-Xmx2g -Xms512m"
 ENTRYPOINT ["java", "-jar", "/usr/share/jenkins/jenkins.war"]
 
 # Flask - Second stage
-FROM python:3.11-slim AS flask
+FROM python:3.11.11 AS flask
 
 WORKDIR /App
 
