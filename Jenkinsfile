@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         EC2_USER = "ec2-user"
-        EC2_HOST = "100.26.213.156"
+        EC2_HOST = "54.196.30.144"
         PEM_KEY = "/home/ubuntu/.ssh/private_key.pem"  // Corrected secure path
         APP_NAME = "flask-app"
         REMOTE_PATH = "/home/ubuntu/$APP_NAME"
