@@ -46,7 +46,7 @@ WORKDIR /App
 
 RUN python3 -m venv /App/venv
 
-ENV PATH="/App/venv/bin:$PATH"
+RUN . /App/venv/bin/activate
 
 COPY requirements.txt /App/requirements.txt
 RUN /App/venv/bin/pip install --no-cache-dir -r requirements.txt
