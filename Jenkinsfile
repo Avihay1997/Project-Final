@@ -35,7 +35,7 @@ pipeline {
 
         stage('Docker Build') {
             steps {
-                sh 'docker build -t flask-app -f App/Dockerfile .'
+                sh 'docker build -t flask-image -f App/Dockerfile .'
             }
         }
 
