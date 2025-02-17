@@ -33,9 +33,15 @@ pipeline {
             }
         }
 
+        stage('Check Docker') {
+            steps {
+                sh 'docker info'
+            }
+        }
+
         stage('Docker Build') {
             steps {
-                sh 'docker build -t flask-image -f App/Dockerfile .'
+                sh 'docker build -t flask-image -f ./App/Dockerfile .'
             }
         }
 
