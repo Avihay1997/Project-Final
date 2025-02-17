@@ -4,7 +4,7 @@ pipeline {
     environment {
         EC2_USER = "ec2-user"
         EC2_HOST = "54.196.30.144"
-        PEM_KEY = "/home/ubuntu/.ssh/private_key.pem"  // Corrected secure path
+        PEM_KEY = "/home/ubuntu/.ssh/private_key.pem"
         APP_NAME = "flask-app"
         REMOTE_PATH = "/home/ubuntu/$APP_NAME"
     }
@@ -18,12 +18,14 @@ pipeline {
 
         stage('Build & Test Flask App') {
             steps {
-                sh 'pip install -r App/requirements.txt'
                 script {
-                    // Check if the 'App/tests' directory exists before running tests
+                    sh 'python3 -m venv /App/venv'
+                    sh '/App/venv/bin/pip install --upgrade pip'
+                    sh '/App/venv/bin/pip install -r App/requirements.txt'
+                    
                     def testsExist = fileExists('App/tests')
                     if (testsExist) {
-                        sh 'python3 -m unittest discover App/tests'
+                        sh '/App/venv/bin/python3 -m unittest discover App/tests'
                     } else {
                         echo 'No tests directory found, skipping tests.'
                     }
