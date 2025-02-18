@@ -2,11 +2,11 @@ pipeline {
     agent any
 
     environment {
-        EC2_USER = "ec2-user"
+        EC2_USER = "ubuntu"
         EC2_HOST = "54.196.30.144"
         PEM_KEY = "/home/ubuntu/.ssh/private_key.pem"
-        APP_NAME = "flask-app"
-        REMOTE_PATH = "/home/ubuntu/$APP_NAME"
+        REMOTE_PATH = "/home/ubuntu/Project-Final"
+        DOCKER_USER = "avihay1997"  // שם המשתמש שלך ב-Docker Hub
     }
 
     stages {
@@ -22,7 +22,7 @@ pipeline {
                     sh 'python3 -m venv /App/venv'
                     sh '/App/venv/bin/pip install --upgrade pip'
                     sh '/App/venv/bin/pip install -r App/requirements.txt'
-                    
+
                     def testsExist = fileExists('App/tests')
                     if (testsExist) {
                         sh '/App/venv/bin/python3 -m unittest discover App/tests'
@@ -33,25 +33,32 @@ pipeline {
             }
         }
 
-        stage('Check Docker') {
+        stage('Docker Build & Push') {
             steps {
-                sh 'docker info'
-            }
-        }
-
-        stage('Docker Build') {
-            steps {
-                sh 'docker build -t flask-image -f ./App/Dockerfile .'
+                sh 'docker build -t flask-image -f App/Dockerfile .'
+                sh 'docker build -t jenkins-image -f Jenkins/Dockerfile .'
+                
+                sh "docker login -u avihay1997 -p dckr_pat_ulUWvLF7xjNfcV7QMzyiD2N_sl8"
+                sh "docker tag flask-image avihay1997/flask-image:latest"
+                sh "docker tag jenkins-image $DOCKER_USER/jenkins-image:latest"
+                sh "docker push avihay1997/flask-image:latest"
+                sh "docker push avihay1997/jenkins-image:latest"
             }
         }
 
         stage('Deploy to EC2') {
             steps {
                 sh """
-                scp -i $PEM_KEY App/Dockerfile ubuntu@$EC2_HOST:$REMOTE_PATH/
-                ssh -i $PEM_KEY ubuntu@$EC2_HOST << EOF
-                cd $REMOTE_PATH
-                docker-compose up -d --build
+                ssh -i $PEM_KEY $EC2_USER@$EC2_HOST << EOF
+                docker login -u avihay1997 -p dckr_pat_ulUWvLF7xjNfcV7QMzyiD2N_sl8
+                docker pull avihay1997/flask-image:latest
+                docker pull avihay1997/jenkins-image:latest
+                docker stop flask-server || true
+                docker stop jenkins-server || true
+                docker rm flask-server || true
+                docker rm jenkins-server || true
+                docker run -d --name flask-server -p 5000:5000 avihay1997/flask-image:latest
+                docker run -d --name jenkins-server -p 8080:8080 avihay1997/jenkins-image:latest
                 EOF
                 """
             }
