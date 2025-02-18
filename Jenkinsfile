@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         EC2_USER = "ubuntu"
-        EC2_HOST = "100.26.132.141"
+        EC2_HOST = "100.25.211.20"
         PEM_KEY = "/home/ubuntu/.ssh/private_key.pem"
         REMOTE_PATH = "/home/ubuntu/Project-Final"
         DOCKER_USER = "avihay1997"
@@ -20,8 +20,8 @@ pipeline {
             steps {
                 script {
                     sh 'python3 -m venv ./App/venv'
-                    sh './App/venv/bin/pip install --upgrade pip'
-                    sh './App/venv/bin/pip install -r App/requirements.txt'
+                    sh '. ./App/venv/bin/pip install --upgrade pip'
+                    sh '. ./App/venv/bin/pip install -r App/requirements.txt'
 
                     def testsExist = fileExists('App/tests')
                     if (testsExist) {
@@ -40,7 +40,7 @@ pipeline {
                 
                 sh "docker login -u avihay1997 -p dckr_pat_ulUWvLF7xjNfcV7QMzyiD2N_sl8"
                 sh "docker tag flask-image avihay1997/flask-image:latest"
-                sh "docker tag jenkins-image $DOCKER_USER/jenkins-image:latest"
+                sh "docker tag jenkins-image avihay1997/jenkins-image:latest"
                 sh "docker push avihay1997/flask-image:latest"
                 sh "docker push avihay1997/jenkins-image:latest"
             }
