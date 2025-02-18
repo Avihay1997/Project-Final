@@ -20,26 +20,6 @@ ENV JAVA_OPTS="-Xmx2g -Xms512m"
 ENTRYPOINT ["java", "-jar", "/usr/share/jenkins/jenkins.war"]
 
 # Flask - Second stage
-FROM jenkins/jenkins:lts-jdk17 AS jenkins
-
-USER root
-
-RUN apt-get update && apt-get install -y \
-    lsb-release \
-    curl \
-    gnupg \
-    git \
-    unzip \
-    && rm -rf /var/lib/apt/lists/*
-
-VOLUME ["/var/jenkins_home"]
-
-EXPOSE 8080 50000
-
-ENV JAVA_OPTS="-Xmx2g -Xms512m"
-
-ENTRYPOINT ["java", "-jar", "/usr/share/jenkins/jenkins.war"]
-
 FROM python:3.11.11 AS flask
 
 WORKDIR /App
