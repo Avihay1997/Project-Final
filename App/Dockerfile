@@ -22,12 +22,12 @@ ENTRYPOINT ["java", "-jar", "/usr/share/jenkins/jenkins.war"]
 # Flask - Second stage
 FROM python:3.11.11 AS flask
 
-WORKDIR . /App
+WORKDIR /App
 
 RUN python3 -m venv /App/venv
 
-COPY ./requirements.txt /App/requirements.txt
-RUN /App/venv/bin/pip install --no-cache-dir -r ./App/requirements.txt
+COPY requirements.txt /App/requirements.txt
+RUN /App/venv/bin/pip install --no-cache-dir -r /App/requirements.txt
 
 COPY . /App/
 RUN chmod +x /App/entrypoint.sh
