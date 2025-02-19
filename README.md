@@ -16,7 +16,7 @@ Develop a full CI/CD pipeline using *Jenkins, Docker, and GitHub* to automate th
 ### *Steps to Implement:*  
 
 1. *Develop a Simple Web App*  
-   - Create a basic Flask or Node.js application with a simple UI.  
+   - Create a basic Flask application with a simple UI.  
 
 2. *Create a Dockerfile*  
    - Write a Dockerfile to containerize the application.  
