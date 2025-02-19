@@ -26,8 +26,8 @@ WORKDIR . /App
 
 RUN python3 -m venv /App/venv
 
-COPY requirements.txt . /App/requirements.txt
-RUN . /App/venv/bin/pip install --no-cache-dir -r requirements.txt
+COPY requirements.txt /App/requirements.txt
+RUN /App/venv/bin/pip install --no-cache-dir -r requirements.txt
 
 COPY . /App/
 RUN chmod +x /App/entrypoint.sh
