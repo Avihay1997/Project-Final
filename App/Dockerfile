@@ -24,8 +24,7 @@ FROM python:3.11.11 AS flask
 
 WORKDIR . /App
 
-RUN python3 -m venv ./App/venv/bin/activate
-
+RUN python3 -m venv /App/venv
 RUN ./App/venv/bin/activate
 
 COPY requirements.txt ./App/requirements.txt
