@@ -22,9 +22,9 @@ ENTRYPOINT ["java", "-jar", "/usr/share/jenkins/jenkins.war"]
 # Flask - Second stage
 FROM python:3.11.11 AS flask
 
-WORKDIR /App
+WORKDIR . /App
 
-RUN python3 -m venv /App/venv
+RUN python3 -m venv /App/venv/bin
 
 RUN . /App/venv/bin/activate
 
@@ -36,4 +36,4 @@ RUN chmod +x /App/entrypoint.sh
 
 EXPOSE 5000
 
-ENTRYPOINT ["/App/entrypoint.sh"]
+ENTRYPOINT [". /App/entrypoint.sh"]

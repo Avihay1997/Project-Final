@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         EC2_USER = "ubuntu"
-        EC2_HOST = "100.25.211.20"
+        EC2_HOST = "18.207.112.53"
         PEM_KEY = "/home/ubuntu/.ssh/private_key.pem"
         REMOTE_PATH = "/home/ubuntu/Project-Final"
         DOCKER_USER = "avihay1997"
@@ -19,9 +19,9 @@ pipeline {
         stage('Build & Test Flask App') {
             steps {
                 script {
-                    sh 'python3 -m venv /App/venv'
-                    sh '/App/venv/bin/pip install --upgrade pip'
-                    sh '/App/venv/bin/pip install -r App/requirements.txt'
+                    sh 'python3 -m venv App/venv/bin/'
+                    sh 'App/venv/bin/pip install --upgrade pip'
+                    sh 'App/venv/bin/pip install -r App/requirements.txt'
 
                     def testsExist = fileExists('App/tests')
                     if (testsExist) {
