@@ -1,6 +1,6 @@
 #!/bin/bash
-/usr/local/bin/jenkins.sh &
+java -jar /usr/share/jenkins/jenkins.war &
 
 sleep 20
 
-python3 ./App/app.py
+python3 /App/app.py
