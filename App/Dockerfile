@@ -26,7 +26,7 @@ WORKDIR . /App
 
 RUN python3 -m venv /App/venv/bin
 
-RUN . /App/venv/bin/activate
+RUN /App/venv/bin/activate
 
 COPY requirements.txt /App/requirements.txt
 RUN /App/venv/bin/pip install --no-cache-dir -r requirements.txt
