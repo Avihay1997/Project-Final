@@ -14,7 +14,7 @@ services:
       - jenkins_home:/var/jenkins_home
     restart: always
     environment:
-      - JAVA_OPTS=""
+      - JAVA_OPTS="-Xmx2g -Xms512m"
 
   flask:
     build:
@@ -27,6 +27,7 @@ services:
     environment:
       - FLASK_ENV=development
     restart: always
-
+    depends_on:
+      - jenkins
 volumes:
   jenkins_home:
