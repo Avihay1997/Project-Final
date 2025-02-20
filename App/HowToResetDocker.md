@@ -4,3 +4,7 @@ docker rmi $(docker images -q)
 docker network prune
 docker volume prune
 docker system prune -a --volumes
+
+
+docker-compose up --build -d
+
