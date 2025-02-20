@@ -17,7 +17,7 @@ EXPOSE 8080 50000
 
 ENV JAVA_OPTS="-Xmx2g -Xms512m"
 
-ENTRYPOINT ["java", "-jar", "/usr/share/jenkins/jenkins.war"]
+CMD ["java", "-jar", "/usr/share/jenkins/jenkins.war"]
 
 # Flask - Second stage
 FROM python:3.11.11 AS flask
@@ -34,4 +34,4 @@ RUN chmod +x /App/entrypoint.sh
 
 EXPOSE 5000
 
-ENTRYPOINT ["/bin/bash", "-c", "/App/entrypoint.sh"]
+CMD ["/bin/bash", "-c", "/App/entrypoint.sh"]
