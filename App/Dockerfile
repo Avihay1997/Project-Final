@@ -34,4 +34,4 @@ RUN chmod +x /App/entrypoint.sh
 
 EXPOSE 5000
 
-CMD ["/bin/bash", "-c", "/App/entrypoint.sh"]
+CMD ["/App/venv/bin/python", "/App/app.py"]
