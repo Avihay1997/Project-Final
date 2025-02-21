@@ -19,9 +19,9 @@ pipeline {
         stage('Build & Test Flask App') {
             steps {
                 script {
-                    sh 'python3 -m venv ./App/venv'
-                    sh './App/venv/bin/pip install --upgrade pip'
-                    sh './App/venv/bin/pip install -r App/requirements.txt'
+                    sh '/usr/bin/python3 -m venv ./App/venv'
+                    sh './App/venv/bin/python -m pip install --upgrade pip'
+                    sh './App/venv/bin/python -m pip install -r App/requirements.txt'
 
                     def testsExist = fileExists('App/tests')
                     if (testsExist) {
