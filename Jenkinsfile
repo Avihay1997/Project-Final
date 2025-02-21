@@ -19,6 +19,8 @@ pipeline {
         stage('Build & Test Flask App') {
             steps {
                 script {
+                    sh 'echo $PATH'
+                    sh 'which python3 || echo "Python3 not found!"'
                     sh '/usr/bin/python3 -m venv ./App/venv'
                     sh './App/venv/bin/python -m pip install --upgrade pip'
                     sh './App/venv/bin/python -m pip install -r App/requirements.txt'
