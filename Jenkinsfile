@@ -19,7 +19,7 @@ pipeline {
         stage('Build & Test Flask App') {
             steps {
                 script {
-                    sh 'python -m venv ./App/venv/bin'
+                    sh 'python3 -m venv ./App/venv'
                     sh './App/venv/bin/pip install --upgrade pip'
                     sh './App/venv/bin/pip install -r App/requirements.txt'
 
