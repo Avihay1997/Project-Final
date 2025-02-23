@@ -38,7 +38,8 @@ pipeline {
         stage('Docker Build & Push') {
             steps {
                 sh 'export PATH=$PATH:/usr/bin'
-
+                
+                sh 'which docker || echo "Docker not found!"'    
                 sh 'docker build -t app-flask -f ./App/Dockerfile .'
                 sh 'docker build -t app-jenkins -f ./App/Dockerfile .'
                 
