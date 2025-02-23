@@ -42,3 +42,11 @@ sudo systemctl restart jenkins
 sudo su - jenkins
 docker --version
 
+
+
+docker tag app-flask:latest avihay1997/app-flask:latest
+docker tag app-jenkins:latest avihay1997/app-jenkins:latest
+
+docker push avihay1997/app-flask:latest
+docker push avihay1997/app-jenkins:latest
+
