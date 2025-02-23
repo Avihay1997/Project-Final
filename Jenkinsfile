@@ -41,8 +41,8 @@ pipeline {
                 sh 'docker build -t app-jenkins -f ./App/Dockerfile .'
                 
                 sh "docker login -u avihay1997 -p dckr_pat_HsF9WPS9veZ6d3a5WjPiSGcvlQk"
-                sh "docker tag flask-image avihay1997/app-flask:latest"
-                sh "docker tag jenkins-image avihay1997/app-jenkins:latest"
+                sh "docker tag app-flask avihay1997/app-flask:latest"
+                sh "docker tag app-jenkins avihay1997/app-jenkins:latest"
                 sh "docker push avihay1997/app-flask:latest"
                 sh "docker push avihay1997/app-jenkins:latest"
             }
@@ -53,14 +53,14 @@ pipeline {
                 sh """
                 ssh -i $PEM_KEY $EC2_USER@$EC2_HOST << EOF
                 docker login -u avihay1997 -p dckr_pat_ulUWvLF7xjNfcV7QMzyiD2N_sl8
-                docker pull avihay1997/flask-image:latest
-                docker pull avihay1997/jenkins-image:latest
-                docker stop flask-server || true
-                docker stop jenkins-server || true
-                docker rm flask-server || true
-                docker rm jenkins-server || true
-                docker run -d --name flask-server -p 5000:5000 avihay1997/flask-image:latest
-                docker run -d --name jenkins-server -p 8080:8080 avihay1997/jenkins-image:latest
+                docker pull avihay1997/app-flask:latest
+                docker pull avihay1997/app-jenkins:latest
+                docker stop app-flask || true
+                docker stop app-jenkins || true
+                docker rm app-flask || true
+                docker rm app-jenkins || true
+                docker run -d --name app-flask -p 5000:5000 avihay1997/app-flask:latest
+                docker run -d --name app-jenkins -p 8080:8080 avihay1997/app-jenkins:latest
                 EOF
                 """
             }
