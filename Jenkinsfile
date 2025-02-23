@@ -37,14 +37,14 @@ pipeline {
 
         stage('Docker Build & Push') {
             steps {
-                sh 'docker build -t flask-image -f App/Dockerfile .'
-                sh 'docker build -t jenkins-image -f Jenkins/Dockerfile .'
+                sh 'docker build -t app-flask -f ./App/Dockerfile .'
+                sh 'docker build -t app-jenkins -f ./App/Dockerfile .'
                 
-                sh "docker login -u avihay1997 -p dckr_pat_ulUWvLF7xjNfcV7QMzyiD2N_sl8"
-                sh "docker tag flask-image avihay1997/flask-image:latest"
-                sh "docker tag jenkins-image avihay1997/jenkins-image:latest"
-                sh "docker push avihay1997/flask-image:latest"
-                sh "docker push avihay1997/jenkins-image:latest"
+                sh "docker login -u avihay1997 -p dckr_pat_HsF9WPS9veZ6d3a5WjPiSGcvlQk"
+                sh "docker tag flask-image avihay1997/app-flask:latest"
+                sh "docker tag jenkins-image avihay1997/app-jenkins:latest"
+                sh "docker push avihay1997/app-flask:latest"
+                sh "docker push avihay1997/app-jenkins:latest"
             }
         }
 
