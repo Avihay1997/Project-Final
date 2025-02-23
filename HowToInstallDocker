@@ -4,10 +4,6 @@ docker run -d -p 8080:8080 --name jenkins-server jenkins-image
 docker build -t flask-image --target flask .
 docker run -d -p 5000:5000 --name flask-server flask-image
 
-docker run -d -p 8080:8080 --name jenkins-server jenkins-image
-docker run -d -p 5000:5000 --name flask-server flask-image
-
-
 docker stop jenkins-server
 docker stop flask-server
 
