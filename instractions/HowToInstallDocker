@@ -1,3 +1,15 @@
+new:
+docker build -f Dockerfile-jenkins -t jenkins-server .
+
+docker build -f Dockerfile-flask -t flask-app .
+
+docker-compose up --build
+
+docker ps
+
+
+
+old:
 docker build -t jenkins-image --target jenkins .
 docker run -d -p 8080:8080 --name jenkins-server jenkins-image
 
