@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         EC2_USER = "ubuntu"
-        EC2_HOST = "18.212.187.85"
+        EC2_HOST = "3.89.251.90"
         PEM_KEY = "/home/ubuntu/.ssh/private_key.pem"
         REMOTE_PATH = "/home/ubuntu/Project-Final"
         DOCKER_USER = "avihay1997"
@@ -40,8 +40,8 @@ pipeline {
                 sh 'export PATH=$PATH:/usr/bin'
                 
                 sh 'which docker || echo "Docker not found!"'    
-                sh 'docker build -t app-flask -f ./App/Dockerfile .'
-                sh 'docker build -t app-jenkins -f ./App/Dockerfile .'
+                sh 'docker build -t app-flask -f ./App/Dockerfile-flask .'
+                sh 'docker build -t app-jenkins -f ./App/Dockerfile-jenkins .'
                 
                 sh "docker login -u avihay1997 -p dckr_pat_HsF9WPS9veZ6d3a5WjPiSGcvlQk"
                 sh "docker tag app-flask avihay1997/app-flask:latest"
