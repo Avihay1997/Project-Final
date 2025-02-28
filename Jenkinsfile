@@ -33,7 +33,7 @@ pipeline {
         stage('Docker Build & Push') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', passwordVariable: 'DOCKER_PSW', usernameVariable: 'DOCKER_USR')]) {
-                    sh 'echo $DOCKER_PSW | docker login -u $DOCKER_USR --password-stdin'
+                    sh 'echo dckr_pat_0pdVBxGZdaOmXcUhFDAlqMFEQ-A | docker login -u avihay1997 --password-stdin'
                     sh 'docker build -t app-flask -f ./App/Dockerfile-flask .'
                     sh 'docker build -t app-jenkins -f ./App/Dockerfile-jenkins .'
                     sh 'docker tag app-flask avihay1997/app-flask:latest'
