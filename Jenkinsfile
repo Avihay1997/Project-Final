@@ -7,7 +7,7 @@ pipeline {
     }
     environment {
         EC2_USER = "ubuntu"
-        EC2_HOST = "44.207.2.96"
+        EC2_HOST = "54.173.91.223"
         PEM_KEY = "/home/ubuntu/.ssh/private_key.pem"
         REMOTE_PATH = "/home/ubuntu/Project-Final"
         DOCKER_CREDENTIALS = credentials('docker-hub-credentials')
