@@ -10,7 +10,7 @@ pipeline {
     stages {
         stage('Install Git') {
             steps {
-                sh 'apt-get update && apt-get install -y git'
+                sh 'sudo apt-get update && sudo apt-get install -y git'
             }
         }
         stage('Clone Repository') {
@@ -21,7 +21,7 @@ pipeline {
         stage('Build & Test Flask App') {
             steps {
                 script {
-                    sh 'apk add --no-cache python3 py3-pip'
+                    sh 'sudo apt-get update && sudo apt-get install -y python3 python3-pip'
                     sh 'python3 -m venv ./App/venv || python3 -m pip install virtualenv && python3 -m virtualenv ./App/venv'
                     sh './App/venv/bin/pip install --upgrade pip'
                     sh './App/venv/bin/pip install -r App/requirements.txt'
