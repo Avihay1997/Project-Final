@@ -7,12 +7,6 @@ pipeline {
         REMOTE_PATH = "/home/ubuntu/Project-Final"
         DOCKER_CREDENTIALS = credentials('docker-hub-credentials')
     }
-    stages {
-        stage('Install Git') {
-            steps {
-                sh 'sudo apt-get update && sudo apt-get install -y git'
-            }
-        }
         stage('Clone Repository') {
             steps {
                 git(url: 'https://github.com/Avihay1997/Project-Final', branch: 'main')
