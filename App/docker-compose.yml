@@ -4,7 +4,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile-jenkins
-      target: jenkins
     container_name: jenkins-server
     ports:
       - "8080:8080"
@@ -22,7 +21,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile-flask
-      target: flask
     container_name: flask-app
     ports:
       - "5000:5000"
