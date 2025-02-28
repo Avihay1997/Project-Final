@@ -1,5 +1,4 @@
 version: '3.8'
-
 services:
   jenkins:
     build:
@@ -12,10 +11,13 @@ services:
       - "50000:50000"
     volumes:
       - jenkins_home:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /usr/bin/docker:/usr/bin/docker
     restart: always
     environment:
       - JAVA_OPTS="-Xmx2g -Xms512m"
-
+    group_add:
+      - ${DOCKER_GID:-999}  # Default docker GID is 999 on many systems
   flask:
     build:
       context: .
