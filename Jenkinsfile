@@ -18,7 +18,7 @@ pipeline {
         stage('Build & Test Flask App') {
             steps {
                 script {
-                    sh 'sudo apt-get update && sudo apt-get install -y python3 python3-pip'
+                    sh 'apt-get update && sudo apt-get install -y python3 python3-pip'
                     sh 'python3 -m venv ./App/venv || python3 -m pip install virtualenv && python3 -m virtualenv ./App/venv'
                     sh './App/venv/bin/pip install --upgrade pip'
                     sh './App/venv/bin/pip install -r App/requirements.txt'
