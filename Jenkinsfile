@@ -1,10 +1,5 @@
 pipeline {
-    agent {
-        docker {
-            image 'docker:dind'
-            args '-v /var/run/docker.sock:/var/run/docker.sock -u root'
-        }
-    }
+    agent any
     environment {
         EC2_USER = "ubuntu"
         EC2_HOST = "54.173.91.223"
