@@ -7,12 +7,14 @@ pipeline {
         REMOTE_PATH = "/home/ubuntu/Project-Final"
         DOCKER_CREDENTIALS = credentials('docker-hub-credentials')
     }
+    
+    stages {
         stage('Clone Repository') {
             steps {
                 git(url: 'https://github.com/Avihay1997/Project-Final', branch: 'main')
             }
         }
-    
+
         stage('Build & Test Flask App') {
             steps {
                 script {
@@ -20,6 +22,7 @@ pipeline {
                     sh 'python3 -m venv ./App/venv || python3 -m pip install virtualenv && python3 -m virtualenv ./App/venv'
                     sh './App/venv/bin/pip install --upgrade pip'
                     sh './App/venv/bin/pip install -r App/requirements.txt'
+                    
                     def testsExist = fileExists('App/tests')
                     if (testsExist) {
                         sh './App/venv/bin/python -m unittest discover App/tests'
@@ -29,6 +32,7 @@ pipeline {
                 }
             }
         }
+
         stage('Docker Build & Push') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', passwordVariable: 'DOCKER_PSW', usernameVariable: 'DOCKER_USR')]) {
@@ -42,6 +46,7 @@ pipeline {
                 }
             }
         }
+
         stage('Deploy to EC2') {
             steps {
                 sh 'apk add --no-cache openssh-client'
