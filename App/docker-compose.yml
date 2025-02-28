@@ -17,7 +17,7 @@ services:
     environment:
       - JAVA_OPTS="-Xmx2g -Xms512m"
     group_add:
-      - ${DOCKER_GID:-999}  # Default docker GID is 999 on many systems
+      - ${DOCKER_GID:-999}
   flask:
     build:
       context: .
