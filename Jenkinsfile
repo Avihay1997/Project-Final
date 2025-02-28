@@ -57,8 +57,8 @@ pipeline {
                 sh "chmod 600 ~/.ssh/id_rsa"
                 
                 sh """
-                ssh $EC2_USER@$EC2_HOST << EOF
-                docker login -u $DOCKER_CREDENTIALS_USR -p $DOCKER_CREDENTIALS_PSW
+                ssh ubuntu@ip-172-31-95-113 << EOF
+                docker login -u avihay1997 -p dckr_pat_ulUWvLF7xjNfcV7QMzyiD2N_sl8
                 docker pull avihay1997/app-flask:latest
                 docker pull avihay1997/app-jenkins:latest
                 docker stop app-flask || true
