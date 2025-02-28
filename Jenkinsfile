@@ -1,21 +1,19 @@
 pipeline {
     agent any
-
     environment {
         EC2_USER = "ubuntu"
-        EC2_HOST = "54.147.147.14"
+        EC2_HOST = "44.207.2.96"
         PEM_KEY = "/home/ubuntu/.ssh/private_key.pem"
         REMOTE_PATH = "/home/ubuntu/Project-Final"
-        DOCKER_USER = "avihay1997"
+        DOCKER_USER = credentials('docker-hub-user')
+        DOCKER_PASSWORD = credentials('docker-hub-password')
     }
-
     stages {
         stage('Clone Repository') {
             steps {
                 git(url: 'https://github.com/Avihay1997/Project-Final', branch: 'main')
             }
         }
-
         stage('Build & Test Flask App') {
             steps {
                 script {
@@ -24,7 +22,6 @@ pipeline {
                     sh '/usr/bin/python3 -m venv ./App/venv'
                     sh './App/venv/bin/python -m pip install --upgrade pip'
                     sh './App/venv/bin/python -m pip install -r App/requirements.txt'
-
                     def testsExist = fileExists('App/tests')
                     if (testsExist) {
                         sh './App/venv/bin/python3 -m unittest discover App/tests'
@@ -34,28 +31,26 @@ pipeline {
                 }
             }
         }
-
         stage('Docker Build & Push') {
             steps {
-                sh 'export PATH=$PATH:/usr/bin'
+                sh '''
+                export DOCKER_HOST=unix:///var/run/docker.sock
+                docker build -t app-flask -f ./App/Dockerfile-flask .
+                docker build -t app-jenkins -f ./App/Dockerfile-jenkins .
                 
-                sh 'which docker || echo "Docker not found!"'    
-                sh 'docker build -t app-flask -f ./App/Dockerfile-flask .'
-                sh 'docker build -t app-jenkins -f ./App/Dockerfile-jenkins .'
-                
-                sh "docker login -u avihay1997 -p dckr_pat_HsF9WPS9veZ6d3a5WjPiSGcvlQk"
-                sh "docker tag app-flask avihay1997/app-flask:latest"
-                sh "docker tag app-jenkins avihay1997/app-jenkins:latest"
-                sh "docker push avihay1997/app-flask:latest"
-                sh "docker push avihay1997/app-jenkins:latest"
+                echo $DOCKER_PASSWORD | docker login -u $DOCKER_USER --password-stdin
+                docker tag app-flask avihay1997/app-flask:latest
+                docker tag app-jenkins avihay1997/app-jenkins:latest
+                docker push avihay1997/app-flask:latest
+                docker push avihay1997/app-jenkins:latest
+                '''
             }
         }
-
         stage('Deploy to EC2') {
             steps {
                 sh """
                 ssh -i $PEM_KEY $EC2_USER@$EC2_HOST << EOF
-                docker login -u avihay1997 -p dckr_pat_ulUWvLF7xjNfcV7QMzyiD2N_sl8
+                docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
                 docker pull avihay1997/app-flask:latest
                 docker pull avihay1997/app-jenkins:latest
                 docker stop app-flask || true
