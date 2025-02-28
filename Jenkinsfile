@@ -1,30 +1,34 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'docker:dind'
+            args '-v /var/run/docker.sock:/var/run/docker.sock -u root'
+        }
+    }
     environment {
         EC2_USER = "ubuntu"
         EC2_HOST = "44.207.2.96"
         PEM_KEY = "/home/ubuntu/.ssh/private_key.pem"
         REMOTE_PATH = "/home/ubuntu/Project-Final"
-        DOCKER_USER = credentials('docker-hub-user')
-        DOCKER_PASSWORD = credentials('docker-hub-password')
+        DOCKER_CREDENTIALS = credentials('docker-hub-credentials')
     }
     stages {
         stage('Clone Repository') {
             steps {
+                sh 'apk add --no-cache git'
                 git(url: 'https://github.com/Avihay1997/Project-Final', branch: 'main')
             }
         }
         stage('Build & Test Flask App') {
             steps {
                 script {
-                    sh 'echo $PATH'
-                    sh 'which python3 || echo "Python3 not found!"'
-                    sh '/usr/bin/python3 -m venv ./App/venv'
-                    sh './App/venv/bin/python -m pip install --upgrade pip'
-                    sh './App/venv/bin/python -m pip install -r App/requirements.txt'
+                    sh 'apk add --no-cache python3 py3-pip'
+                    sh 'python3 -m venv ./App/venv || python3 -m pip install virtualenv && python3 -m virtualenv ./App/venv'
+                    sh './App/venv/bin/pip install --upgrade pip'
+                    sh './App/venv/bin/pip install -r App/requirements.txt'
                     def testsExist = fileExists('App/tests')
                     if (testsExist) {
-                        sh './App/venv/bin/python3 -m unittest discover App/tests'
+                        sh './App/venv/bin/python -m unittest discover App/tests'
                     } else {
                         echo 'No tests directory found, skipping tests.'
                     }
@@ -33,24 +37,28 @@ pipeline {
         }
         stage('Docker Build & Push') {
             steps {
-                sh '''
-                export DOCKER_HOST=unix:///var/run/docker.sock
-                docker build -t app-flask -f ./App/Dockerfile-flask .
-                docker build -t app-jenkins -f ./App/Dockerfile-jenkins .
-                
-                echo $DOCKER_PASSWORD | docker login -u $DOCKER_USER --password-stdin
-                docker tag app-flask avihay1997/app-flask:latest
-                docker tag app-jenkins avihay1997/app-jenkins:latest
-                docker push avihay1997/app-flask:latest
-                docker push avihay1997/app-jenkins:latest
-                '''
+                sh 'echo $DOCKER_CREDENTIALS_PSW | docker login -u $DOCKER_CREDENTIALS_USR --password-stdin'
+                sh 'docker build -t app-flask -f ./App/Dockerfile-flask .'
+                sh 'docker build -t app-jenkins -f ./App/Dockerfile-jenkins .'
+                sh 'docker tag app-flask avihay1997/app-flask:latest'
+                sh 'docker tag app-jenkins avihay1997/app-jenkins:latest'
+                sh 'docker push avihay1997/app-flask:latest'
+                sh 'docker push avihay1997/app-jenkins:latest'
             }
         }
         stage('Deploy to EC2') {
             steps {
+                sh 'apk add --no-cache openssh-client'
+                sh 'mkdir -p ~/.ssh'
+                sh 'echo "StrictHostKeyChecking no" > ~/.ssh/config'
+                sh "echo '-----BEGIN RSA PRIVATE KEY-----' > ~/.ssh/id_rsa"
+                sh "cat $PEM_KEY >> ~/.ssh/id_rsa"
+                sh "echo '-----END RSA PRIVATE KEY-----' >> ~/.ssh/id_rsa"
+                sh "chmod 600 ~/.ssh/id_rsa"
+                
                 sh """
-                ssh -i $PEM_KEY $EC2_USER@$EC2_HOST << EOF
-                docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+                ssh $EC2_USER@$EC2_HOST << EOF
+                docker login -u $DOCKER_CREDENTIALS_USR -p $DOCKER_CREDENTIALS_PSW
                 docker pull avihay1997/app-flask:latest
                 docker pull avihay1997/app-jenkins:latest
                 docker stop app-flask || true
