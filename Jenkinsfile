@@ -37,13 +37,15 @@ pipeline {
         }
         stage('Docker Build & Push') {
             steps {
-                sh 'echo $DOCKER_CREDENTIALS_PSW | docker login -u $DOCKER_CREDENTIALS_USR --password-stdin'
-                sh 'docker build -t app-flask -f ./App/Dockerfile-flask .'
-                sh 'docker build -t app-jenkins -f ./App/Dockerfile-jenkins .'
-                sh 'docker tag app-flask avihay1997/app-flask:latest'
-                sh 'docker tag app-jenkins avihay1997/app-jenkins:latest'
-                sh 'docker push avihay1997/app-flask:latest'
-                sh 'docker push avihay1997/app-jenkins:latest'
+                withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', passwordVariable: 'DOCKER_PSW', usernameVariable: 'DOCKER_USR')]) {
+                    sh 'echo $DOCKER_PSW | docker login -u $DOCKER_USR --password-stdin'
+                    sh 'docker build -t app-flask -f ./App/Dockerfile-flask .'
+                    sh 'docker build -t app-jenkins -f ./App/Dockerfile-jenkins .'
+                    sh 'docker tag app-flask avihay1997/app-flask:latest'
+                    sh 'docker tag app-jenkins avihay1997/app-jenkins:latest'
+                    sh 'docker push avihay1997/app-flask:latest'
+                    sh 'docker push avihay1997/app-jenkins:latest'
+                }
             }
         }
         stage('Deploy to EC2') {
@@ -55,20 +57,24 @@ pipeline {
                 sh "cat $PEM_KEY >> ~/.ssh/id_rsa"
                 sh "echo '-----END RSA PRIVATE KEY-----' >> ~/.ssh/id_rsa"
                 sh "chmod 600 ~/.ssh/id_rsa"
-                
-                sh """
-                ssh ubuntu@ip-172-31-95-113 << EOF
-                docker login -u avihay1997 -p dckr_pat_0pdVBxGZdaOmXcUhFDAlqMFEQ-A
-                docker pull avihay1997/app-flask:latest
-                docker pull avihay1997/app-jenkins:latest
-                docker stop app-flask || true
-                docker stop app-jenkins || true
-                docker rm app-flask || true
-                docker rm app-jenkins || true
-                docker run -d --name app-flask -p 5000:5000 avihay1997/app-flask:latest
-                docker run -d --name app-jenkins -p 8080:8080 avihay1997/app-jenkins:latest
-                EOF
-                """
+
+                script {
+                    sshagent (credentials: ['my-ec2-ssh-key']) {
+                        sh """
+                        ssh -o StrictHostKeyChecking=no ubuntu@ip-172-31-95-113 << EOF
+                        docker login -u avihay1997 -p dckr_pat_0pdVBxGZdaOmXcUhFDAlqMFEQ-A
+                        docker pull avihay1997/app-flask:latest
+                        docker pull avihay1997/app-jenkins:latest
+                        docker stop app-flask || true
+                        docker stop app-jenkins || true
+                        docker rm app-flask || true
+                        docker rm app-jenkins || true
+                        docker run -d --name app-flask -p 5000:5000 avihay1997/app-flask:latest
+                        docker run -d --name app-jenkins -p 8080:8080 avihay1997/app-jenkins:latest
+                        EOF
+                        """
+                    }
+                }
             }
         }
     }
