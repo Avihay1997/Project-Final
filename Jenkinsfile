@@ -57,7 +57,7 @@ pipeline {
                     sshagent (credentials: ['my-ec2-ssh-key']) {
                         sh """
                         ssh -o StrictHostKeyChecking=no ubuntu@ip-172-31-95-113 << EOF
-                        docker login -u avihay1997 -p dckr_pat_0pdVBxGZdaOmXcUhFDAlqMFEQ-A
+                        docker login -u avihay1997 -p dckr_pat_jiFoZGD6MotvdlrWyriORpr72Uc
                         docker pull avihay1997/app-flask:latest
                         docker pull avihay1997/app-jenkins:latest
                         docker stop app-flask || true
