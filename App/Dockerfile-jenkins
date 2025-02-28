@@ -1,6 +1,4 @@
-# Jenkins - First stage
-FROM jenkins/jenkins:lts-jdk17 AS jenkins
-
+FROM jenkins/jenkins:lts-jdk17
 USER root
 
 RUN apt-get update && apt-get install -y \
@@ -9,12 +7,24 @@ RUN apt-get update && apt-get install -y \
     gnupg \
     git \
     unzip \
-    && rm -rf /var/lib/apt/lists/*
+    apt-transport-https \
+    ca-certificates \
+    software-properties-common
+
+RUN curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+
+RUN echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] \
+  https://download.docker.com/linux/debian \
+  $(lsb_release -cs) stable" > /etc/apt/sources.list.d/docker.list
+
+RUN apt-get update && apt-get install -y docker-ce-cli
+
+RUN groupadd -f docker && usermod -aG docker jenkins
 
 VOLUME ["/var/jenkins_home"]
-
 EXPOSE 8080 50000
-
 ENV JAVA_OPTS="-Xmx2g -Xms512m"
 
+USER jenkins
 CMD ["java", "-jar", "/usr/share/jenkins/jenkins.war"]
