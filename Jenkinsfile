@@ -58,7 +58,7 @@ pipeline {
                 
                 sh """
                 ssh ubuntu@ip-172-31-95-113 << EOF
-                docker login -u avihay1997 -p dckr_pat_ulUWvLF7xjNfcV7QMzyiD2N_sl8
+                docker login -u avihay1997 -p dckr_pat_0pdVBxGZdaOmXcUhFDAlqMFEQ-A
                 docker pull avihay1997/app-flask:latest
                 docker pull avihay1997/app-jenkins:latest
                 docker stop app-flask || true
