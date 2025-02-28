@@ -8,9 +8,13 @@ pipeline {
         DOCKER_CREDENTIALS = credentials('docker-hub-credentials')
     }
     stages {
+        stage('Install Git') {
+            steps {
+                sh 'apt-get update && apt-get install -y git'
+            }
+        }
         stage('Clone Repository') {
             steps {
-                sh 'apk add --no-cache git'
                 git(url: 'https://github.com/Avihay1997/Project-Final', branch: 'main')
             }
         }
