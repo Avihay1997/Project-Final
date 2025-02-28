@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         EC2_USER = "ubuntu"
-        EC2_HOST = "3.89.251.90"
+        EC2_HOST = "54.147.147.14"
         PEM_KEY = "/home/ubuntu/.ssh/private_key.pem"
         REMOTE_PATH = "/home/ubuntu/Project-Final"
         DOCKER_USER = "avihay1997"
