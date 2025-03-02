@@ -2,7 +2,7 @@ pipeline {
     agent any
     environment {
         EC2_USER = "ubuntu"
-        EC2_HOST = "44.211.150.70"
+        EC2_HOST = "18.208.136.66"
         PEM_KEY = "/home/ubuntu/.ssh/private_key.pem"
         REMOTE_PATH = "/home/ubuntu/Project-Final"
         DOCKER_CREDENTIALS = credentials('docker-hub-credentials')
