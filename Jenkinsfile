@@ -1,78 +1,28 @@
 pipeline {
     agent any
     environment {
-        EC2_USER = "ubuntu"
-        EC2_HOST = "18.208.136.66"
-        PEM_KEY = "/home/ubuntu/.ssh/private_key.pem"
-        REMOTE_PATH = "/home/ubuntu/Project-Final"
-        DOCKER_CREDENTIALS = credentials('docker-hub-credentials')
+        CONTAINER_NAME = "flask-app"
+        IMAGE_NAME = "flask-image"
+        SERVER_IP = "172.31.7.191"
+        DOCKER_USER = "avihay1997"
     }
-    
     stages {
-        stage('Clone Repository') {
+        stage('Checkout Code') {
             steps {
-                git(url: 'https://github.com/Avihay1997/Project-Final', branch: 'main')
+                git branch: 'main', url: 'https://github.com/Avihay1997/Project-Final'
             }
         }
-
-        stage('Build & Test Flask App') {
+        stage('Build Docker Image') {
             steps {
                 script {
-                    sh 'apt-get update && sudo apt-get install -y python3 python3-pip'
-                    sh 'python3 -m venv ./App/venv || python3 -m pip install virtualenv && python3 -m virtualenv ./App/venv'
-                    sh './App/venv/bin/pip install --upgrade pip'
-                    sh './App/venv/bin/pip install -r App/requirements.txt'
-                    
-                    def testsExist = fileExists('App/tests')
-                    if (testsExist) {
-                        sh './App/venv/bin/python -m unittest discover App/tests'
-                    } else {
-                        echo 'No tests directory found, skipping tests.'
-                    }
+                    sh 'docker build -f Dockerfile-flask -t flask-app .'
                 }
             }
         }
-
-        stage('Docker Build & Push') {
+        stage('Run New Flask Container') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', passwordVariable: 'DOCKER_PSW', usernameVariable: 'DOCKER_USR')]) {
-                    sh 'echo dckr_pat_0pdVBxGZdaOmXcUhFDAlqMFEQ-A | docker login -u avihay1997 --password-stdin'
-                    sh 'docker build -t app-flask -f ./App/Dockerfile-flask .'
-                    sh 'docker build -t app-jenkins -f ./App/Dockerfile-jenkins .'
-                    sh 'docker tag app-flask avihay1997/app-flask:latest'
-                    sh 'docker tag app-jenkins avihay1997/app-jenkins:latest'
-                    sh 'docker push avihay1997/app-flask:latest'
-                    sh 'docker push avihay1997/app-jenkins:latest'
-                }
-            }
-        }
-
-        stage('Deploy to EC2') {
-            steps {
-                sh 'apk add --no-cache openssh-client'
-                sh 'mkdir -p ~/.ssh'
-                sh 'echo "StrictHostKeyChecking no" > ~/.ssh/config'
-                sh "echo '-----BEGIN RSA PRIVATE KEY-----' > ~/.ssh/id_rsa"
-                sh "cat $PEM_KEY >> ~/.ssh/id_rsa"
-                sh "echo '-----END RSA PRIVATE KEY-----' >> ~/.ssh/id_rsa"
-                sh "chmod 600 ~/.ssh/id_rsa"
-
                 script {
-                    sshagent (credentials: ['my-ec2-ssh-key']) {
-                        sh """
-                        ssh -o StrictHostKeyChecking=no ubuntu@ip-172-31-95-113 << EOF
-                        docker login -u avihay1997 -p dckr_pat_jiFoZGD6MotvdlrWyriORpr72Uc
-                        docker pull avihay1997/app-flask:latest
-                        docker pull avihay1997/app-jenkins:latest
-                        docker stop app-flask || true
-                        docker stop app-jenkins || true
-                        docker rm app-flask || true
-                        docker rm app-jenkins || true
-                        docker run -d --name app-flask -p 5000:5000 avihay1997/app-flask:latest
-                        docker run -d --name app-jenkins -p 8080:8080 avihay1997/app-jenkins:latest
-                        EOF
-                        """
-                    }
+                    sh 'docker run -d --name flask-app -p 5000:5000 flask-app'
                 }
             }
         }
