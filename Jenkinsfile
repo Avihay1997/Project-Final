@@ -13,7 +13,7 @@ pipeline {
         stage('Get EC2 Private IP') {
             steps {
                 script {
-                    172.31.7.191 = sh(script: "aws ec2 describe-instances --filters 'Name=tag:Flask-Server,Values=ec2_private_new_1' --query 'Reservations[*].Instances[*].PrivateIpAddress' --output text", returnStdout: true).trim()
+                    def 172.31.7.191 = sh(script: "aws ec2 describe-instances --filters 'Name=tag:Flask-Server,Values=ec2_private_new_1' --query 'Reservations[].Instances[].PrivateIpAddress' --output text", returnStdout: true).trim()
                     echo "Flask EC2 Private IP: 172.31.7.191"
                 }
             }
