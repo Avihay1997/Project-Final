@@ -11,6 +11,7 @@ pipeline {
         EC2_REGION = "us-east-1"
         EC2_PUBLIC_IP = "44.211.74.145"
         EC2_PRIVATE_IP = "172.31.95.113"
+        EC2_FLASK_PRIVATE_IP = "172.31.7.191"
     }
 
     stages {
@@ -29,32 +30,23 @@ pipeline {
             }
         }
 
-        stage('Build & Push Flask Image') {
+        stage('Build Flask Docker Image') {
             steps {
                 sh 'docker build -f Dockerfile-flask -t flask-app .'
+            }
+        }
+
+        stage('Push Flask Image to Docker Hub') {
+            steps {
                 sh "echo 'dckr_pat_UyFi28fTMFGMwRKl0Ch_pKoy1kw' | docker login -u avihay1997 --password-stdin"
                 sh "docker push flask-app"
             }
         }
 
-        stage('Deploy Flask on EC2') {
+        stage('Deploy Flask on EC2 with Private IP') {
             steps {
                 sh """
-                ssh -o StrictHostKeyChecking=no -i ${PEM_KEY} ubuntu@44.211.74.145  << EOF
-                echo 'dckr_pat_UyFi28fTMFGMwRKl0Ch_pKoy1kw' | docker login -u avihay1997 --password-stdin
-                docker pull flask-app
-                docker stop flask-app || true
-                docker rm flask-app || true
-                docker run -d --name flask-app -p 5000:5000 flask-app
-                EOF
-                """
-            }
-        }
-
-        stage('Deploy Flask on Second EC2') {
-            steps {
-                sh """
-                ssh -o StrictHostKeyChecking=no -i ${PEM_KEY} ubuntu@172.31.95.113 << EOF
+                ssh -o StrictHostKeyChecking=no -i ${PEM_KEY} ubuntu@${EC2_FLASK_PRIVATE_IP} << EOF
                 echo 'dckr_pat_UyFi28fTMFGMwRKl0Ch_pKoy1kw' | docker login -u avihay1997 --password-stdin
                 docker pull flask-app
                 docker stop flask-app || true
