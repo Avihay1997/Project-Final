@@ -1,0 +1,7 @@
+get into the public ec2
+
+docker exec -u 0 -it 26489e274f12 bash
+
+ssh -v -i /root/.ssh/private_key.pem ubuntu@172.31.7.191
+
+ngrok http 5000
