@@ -1,0 +1,24 @@
+the command:
+sudo nano /etc/systemd/system/docker-jenkins.service
+
+the inside:
+[Unit]
+Description=Jenkins Docker Container
+After=docker.service
+Requires=docker.service
+
+[Service]
+Restart=always
+ExecStart=/usr/bin/docker run -d -p 8080:8080 -p 50000:50000 --name jenkins-server app-jenkins
+ExecStop=/usr/bin/docker stop jenkins-server
+ExecStopPost=/usr/bin/docker rm jenkins-server
+
+[Install]
+WantedBy=multi-user.target
+
+
+the run it:
+sudo systemctl daemon-reload
+sudo systemctl enable docker-jenkins.service
+sudo systemctl start docker-jenkins.service
+
