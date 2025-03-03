@@ -1,0 +1,14 @@
+version: '3.8'
+services:
+  flask:
+    build:
+      context: .
+      dockerfile: Dockerfile-flask
+    container_name: flask-app
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_ENV=development
+    restart: always
+    depends_on:
+      - jenkins
