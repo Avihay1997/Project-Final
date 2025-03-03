@@ -22,10 +22,8 @@ RUN apt-get update && apt-get install -y docker-ce-cli
 
 RUN groupadd -f docker && usermod -aG docker jenkins
 
-# VOLUME /home/jenkins
 VOLUME ["/var/jenkins_home"]
 EXPOSE 8080 50000
-
 ENV JAVA_OPTS="-Xmx2g -Xms512m"
 
 USER jenkins
