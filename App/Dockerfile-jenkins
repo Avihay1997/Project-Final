@@ -1,5 +1,4 @@
 FROM jenkins/jenkins:lts-jdk17
-
 USER root
 
 RUN apt-get update && apt-get install -y \
@@ -24,11 +23,8 @@ RUN apt-get update && apt-get install -y docker-ce-cli
 RUN groupadd -f docker && usermod -aG docker jenkins
 
 VOLUME ["/var/jenkins_home"]
-
 EXPOSE 8080 50000
-
 ENV JAVA_OPTS="-Xmx2g -Xms512m"
 
-ENTRYPOINT ["sh", "-c", "chown jenkins:docker /var/run/docker.sock && chmod 666 /var/run/docker.sock && exec java -jar /usr/share/jenkins/jenkins.war"]
-
 USER jenkins
+CMD ["java", "-jar", "/usr/share/jenkins/jenkins.war"]
