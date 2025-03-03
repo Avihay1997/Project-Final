@@ -17,17 +17,5 @@ services:
       - JAVA_OPTS="-Xmx2g -Xms512m"
     group_add:
       - ${DOCKER_GID:-999}
-  flask:
-    build:
-      context: .
-      dockerfile: Dockerfile-flask
-    container_name: flask-app
-    ports:
-      - "5000:5000"
-    environment:
-      - FLASK_ENV=development
-    restart: always
-    depends_on:
-      - jenkins
 volumes:
   jenkins_home:
