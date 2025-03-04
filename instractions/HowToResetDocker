@@ -1,5 +1,5 @@
 docker stop $(docker ps -aq)
 docker rm jenkins-server
 docker rmi app-jenkins
-docker network rm app-jenkins
-docker volume rm app-jenkins
+docker network rm app_default
+docker volume rm app_default
