@@ -68,6 +68,7 @@ pipeline {
 
         stage('Build Flask Docker Image') {
             steps {
+                sh 'docker --version'
                 sh 'docker build -f Dockerfile-flask -t flask-app .'
             }
         }
