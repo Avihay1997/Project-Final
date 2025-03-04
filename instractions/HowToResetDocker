@@ -1,4 +1,4 @@
-docker stop $(docker ps -aq)
+docker stop jenkins-server
 docker rm jenkins-server
 docker rmi app-jenkins
 docker network rm app_default
