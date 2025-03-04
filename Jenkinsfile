@@ -14,6 +14,7 @@ pipeline {
         EC2_PUBLIC_IP = "18.233.102.46"
         EC2_PRIVATE_IP = "172.31.95.113"
         EC2_FLASK_PRIVATE_IP = "172.31.7.191"
+        ROOT_PASSWORD = credentials('root_password') // השתמש בשם החדש
     }
 
     stages {
@@ -65,7 +66,7 @@ pipeline {
         stage('Build Flask Docker Image') {
             steps {
                 script {
-                    sh "sudo su -c 'docker build -f /App/Dockerfile-flask -t flask-app /App'"
+                    sh "echo root_password | sudo -S docker build -f /App/Dockerfile-flask -t flask-app /App"
                 }
             }
         }
