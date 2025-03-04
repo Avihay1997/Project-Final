@@ -1,10 +1,5 @@
 docker stop $(docker ps -aq)
-docker rm $(docker ps -aq)
-docker rmi $(docker images -q)
-docker network prune
-docker volume prune
-docker system prune -a --volumes
-
-
-docker-compose up --build -d
-
+docker rm jenkins-server
+docker rmi app-jenkins
+docker network rm app-jenkins
+docker volume rm app-jenkins
