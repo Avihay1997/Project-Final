@@ -62,7 +62,6 @@ pipeline {
             }
         }
 
-        stages {
         stage('Copy App to Jenkins container') {
             steps {
                 script {
@@ -70,7 +69,7 @@ pipeline {
                 }
             }
         }
-            
+
         stage('Build Flask Docker Image') {
             steps {
                 script {
