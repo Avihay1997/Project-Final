@@ -11,7 +11,7 @@ pipeline {
         FLASK_IMAGE_NAME = "avihay1997/flask-app:latest"
         EC2_INSTANCE_ID = "i-0a16e2cee77eb8e88"
         EC2_REGION = "us-east-1"
-        EC2_PUBLIC_IP = "3.84.27.17"
+        EC2_PUBLIC_IP = "44.206.238.60"
         EC2_PRIVATE_IP = "172.31.95.113"
         EC2_FLASK_PRIVATE_IP = "172.31.7.191"
     }
@@ -80,8 +80,8 @@ pipeline {
         stage('Deploy Flask on EC2 with Private IP') {
             steps {
                 sh """
-                ssh -o StrictHostKeyChecking=no -i ${PEM_KEY} ubuntu@${EC2_FLASK_PRIVATE_IP} << EOF
-                echo '$DOCKER_TOKEN' | docker login -u avihay1997 --password-stdin
+                ssh -o StrictHostKeyChecking=no -i ${PEM_KEY} ubuntu@172.31.7.191 << EOF
+                echo 'DockerToken' | docker login -u avihay1997 --password-stdin
                 docker pull flask-app
                 docker stop flask-app || true
                 docker rm flask-app || true
