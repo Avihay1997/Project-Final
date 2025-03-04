@@ -15,6 +15,6 @@ services:
     environment:
       - JAVA_OPTS="-Xmx2g -Xms512m"
     group_add:
-      - ${DOCKER_GID:-999}
+      - 988
 volumes:
   jenkins_home:
