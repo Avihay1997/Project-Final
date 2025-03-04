@@ -1,6 +1,11 @@
 pipeline {
-    agent any
-
+    agent {
+        docker {
+            image 'docker:20.10.7'
+            args '-v /var/run/docker.sock:/var/run/docker.sock'
+        }
+    }
+    
     environment {
         AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')
         AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
@@ -20,7 +25,6 @@ pipeline {
         stage('Set AWS Credentials') {
             steps {
                 script {
-                    // הגדרת Credentials של AWS
                     sh '''
                     aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
                     aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
@@ -46,8 +50,8 @@ pipeline {
                 script {
                     try {
                         sh """
-                        aws ec2 start-instances --instance-ids ${EC2_INSTANCE_ID} --region ${EC2_REGION} || true
-                        aws ec2 wait instance-running --instance-ids ${EC2_INSTANCE_ID} --region ${EC2_REGION} || true
+                        aws ec2 start-instances --instance-ids i-0a16e2cee77eb8e88 --region us-east-1 || true
+                        aws ec2 wait instance-running --instance-ids i-0a16e2cee77eb8e88 --region us-east-1 || true
                         """
                     } catch (Exception e) {
                         echo "EC2 instance start failed, skipping this stage."
