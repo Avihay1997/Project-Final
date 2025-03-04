@@ -15,6 +15,29 @@ pipeline {
     }
 
     stages {
+        stage('Set AWS Credentials') {
+            steps {
+                script {
+                    sh '''
+                    aws configure set aws_access_key_id "AKIAYSBV4VZAZSHQSHZL"
+                    aws configure set aws_secret_access_key "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"
+                    aws configure set region "us-east-1"
+                    aws configure set output "json"
+                    '''
+                }
+            }
+        }
+
+        stage('Check AWS Identity') {
+            steps {
+                script {
+                    sh '''
+                    aws sts get-caller-identity
+                    '''
+                }
+            }
+        }
+
         stage('Start EC2 Instance') {
             steps {
                 sh """
