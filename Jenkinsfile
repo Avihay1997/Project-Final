@@ -71,7 +71,6 @@ pipeline {
             steps {
                 sh 'docker --version'
                 sh 'sh 'docker build -f /home/ubuntu/Project-Final/App/Dockerfile-flask -t flask-app /home/ubuntu/Project-Final/App'
-'
             }
         }
 
