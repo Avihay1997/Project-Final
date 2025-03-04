@@ -66,7 +66,7 @@ pipeline {
         stage('Build Flask Docker Image') {
             steps {
                 script {
-                    sh "sudo docker build -f /App/Dockerfile-flask -t flask-app /App"
+                    sh "sudo -S docker build -f /App/Dockerfile-flask -t flask-app /App"
                 }
             }
         }
