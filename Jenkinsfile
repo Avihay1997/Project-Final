@@ -1,6 +1,5 @@
 pipeline {
     agent any
-    
     environment {
         AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')
         AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
@@ -77,7 +76,7 @@ pipeline {
         stage('Push Flask Image to Docker Hub') {
             steps {
                 withCredentials([string(credentialsId: 'DOCKER_HUB_TOKEN', variable: 'DOCKER_TOKEN')]) {
-                    sh "echo 'DOCKER_HUB_TOKEN' | docker login -u avihay1997 --password-stdin"
+                    sh "echo \$DOCKER_TOKEN | docker login -u avihay1997 --password-stdin"
                     sh "docker push flask-app"
                 }
             }
