@@ -40,10 +40,16 @@ pipeline {
 
         stage('Start EC2 Instance') {
             steps {
-                sh """
-                aws ec2 start-instances --instance-ids i-0a16e2cee77eb8e88 --region us-east-1
-                aws ec2 wait instance-running --instance-ids i-0a16e2cee77eb8e88 --region us-east-1
-                """
+                script {
+                    try {
+                        sh """
+                        aws ec2 start-instances --instance-ids ${EC2_INSTANCE_ID} --region ${EC2_REGION} || true
+                        aws ec2 wait instance-running --instance-ids ${EC2_INSTANCE_ID} --region ${EC2_REGION} || true
+                        """
+                    } catch (Exception e) {
+                        echo "EC2 instance start failed, skipping this stage."
+                    }
+                }
             }
         }
 
@@ -69,7 +75,7 @@ pipeline {
         stage('Deploy Flask on EC2 with Private IP') {
             steps {
                 sh """
-                ssh -o StrictHostKeyChecking=no -i ${PEM_KEY} ubuntu@${EC2_FLASK_PRIVATE_IP} << EOF
+                ssh -o StrictHostKeyChecking=no -i ${PEM_KEY} ubuntu@172.31.7.191 << EOF
                 echo 'dckr_pat_UyFi28fTMFGMwRKl0Ch_pKoy1kw' | docker login -u avihay1997 --password-stdin
                 docker pull flask-app
                 docker stop flask-app || true
