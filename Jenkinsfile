@@ -2,6 +2,8 @@ pipeline {
     agent any
 
     environment {
+        AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')
+        AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
         EC2_USER = "ubuntu"
         PEM_KEY = "/home/ubuntu/.ssh/private_key.pem"
         DOCKER_USER = "avihay1997"
@@ -10,7 +12,7 @@ pipeline {
         EC2_INSTANCE_ID = "i-0a16e2cee77eb8e88"
         EC2_REGION = "us-east-1"
         EC2_PUBLIC_IP = "3.84.27.17"
-        EC2_PRIVATE_IP = "3.84.27.17"
+        EC2_PRIVATE_IP = "172.31.95.113"
         EC2_FLASK_PRIVATE_IP = "172.31.7.191"
     }
 
@@ -18,9 +20,10 @@ pipeline {
         stage('Set AWS Credentials') {
             steps {
                 script {
+                    // הגדרת Credentials של AWS
                     sh '''
-                    aws configure set aws_access_key_id ""
-                    aws configure set aws_secret_access_key ""
+                    aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+                    aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
                     aws configure set region "us-east-1"
                     aws configure set output "json"
                     '''
@@ -67,16 +70,18 @@ pipeline {
 
         stage('Push Flask Image to Docker Hub') {
             steps {
-                sh "echo 'dckr_pat_UyFi28fTMFGMwRKl0Ch_pKoy1kw' | docker login -u avihay1997 --password-stdin"
-                sh "docker push flask-app"
+                withCredentials([string(credentialsId: 'DOCKER_HUB_TOKEN', variable: 'DOCKER_TOKEN')]) {
+                    sh "echo '$DOCKER_TOKEN' | docker login -u avihay1997 --password-stdin"
+                    sh "docker push flask-app"
+                }
             }
         }
 
         stage('Deploy Flask on EC2 with Private IP') {
             steps {
                 sh """
-                ssh -o StrictHostKeyChecking=no -i ${PEM_KEY} ubuntu@172.31.7.191 << EOF
-                echo 'dckr_pat_UyFi28fTMFGMwRKl0Ch_pKoy1kw' | docker login -u avihay1997 --password-stdin
+                ssh -o StrictHostKeyChecking=no -i ${PEM_KEY} ubuntu@${EC2_FLASK_PRIVATE_IP} << EOF
+                echo '$DOCKER_TOKEN' | docker login -u avihay1997 --password-stdin
                 docker pull flask-app
                 docker stop flask-app || true
                 docker rm flask-app || true
