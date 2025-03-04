@@ -39,6 +39,7 @@ pipeline {
             steps {
                 script {
                     sh '''
+                    export AWS_PAGER=""
                     aws sts get-caller-identity
                     '''
                 }
