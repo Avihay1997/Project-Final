@@ -62,6 +62,15 @@ pipeline {
             }
         }
 
+        stages {
+        stage('Copy App to Jenkins container') {
+            steps {
+                script {
+                    sh 'sudo docker cp /home/ubuntu/Project-Final/App jenkins-server:/'
+                }
+            }
+        }
+            
         stage('Build Flask Docker Image') {
             steps {
                 script {
