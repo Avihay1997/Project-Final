@@ -3,3 +3,13 @@ docker rm jenkins-server
 docker rmi app-jenkins
 docker network rm app_default
 docker volume rm app_jenkins_home
+
+
+docker ps -a
+docker images
+docker volume ls
+docker network ls
+sudo lsof -i :8080
+sudo lsof -i :50000
+
+
