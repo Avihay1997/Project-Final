@@ -1,5 +1,6 @@
 pipeline {
     agent any
+
     environment {
         AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')
         AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
@@ -62,14 +63,10 @@ pipeline {
         }
 
         stage('Build Flask Docker Image') {
-            agent {
-                docker {
-                    image 'docker:20.10.7'
-                    args '-v /var/run/docker.sock:/var/run/docker.sock'
-                }
-            }
             steps {
-                sh "docker build -f /home/ubuntu/Project-Final/App/Dockerfile-flask -t flask-app /home/ubuntu/Project-Final/App"
+                script {
+                    sh "docker build -f /home/ubuntu/Project-Final/App/Dockerfile-flask -t flask-app /home/ubuntu/Project-Final/App"
+                }
             }
         }
 
@@ -84,15 +81,17 @@ pipeline {
 
         stage('Deploy Flask on EC2 with Private IP') {
             steps {
-                sh """
-                ssh -o StrictHostKeyChecking=no -i ${PEM_KEY} ubuntu@172.31.7.191 << EOF
-                echo 'DockerToken' | docker login -u avihay1997 --password-stdin
-                docker pull flask-app
-                docker stop flask-app || true
-                docker rm flask-app || true
-                docker run -d --name flask-app -p 5000:5000 flask-app
-                EOF
-                """
+                script {
+                    sh """
+                    ssh -o StrictHostKeyChecking=no -i ${PEM_KEY} ubuntu@172.31.7.191 << EOF
+                    echo 'DockerToken' | docker login -u avihay1997 --password-stdin
+                    docker pull flask-app
+                    docker stop flask-app || true
+                    docker rm flask-app || true
+                    docker run -d --name flask-app -p 5000:5000 flask-app
+                    EOF
+                    """
+                }
             }
         }
     }
