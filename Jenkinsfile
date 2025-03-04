@@ -1,10 +1,5 @@
 pipeline {
-    agent {
-        docker {
-            image 'docker:20.10.7'
-            args '-v /var/run/docker.sock:/var/run/docker.sock'
-        }
-    }
+    agent any
     
     environment {
         AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')
@@ -68,16 +63,21 @@ pipeline {
         }
 
         stage('Build Flask Docker Image') {
+            agent {
+                docker {
+                    image 'docker:20.10.7'
+                    args '-v /var/run/docker.sock:/var/run/docker.sock'
+                }
+            }
             steps {
-                sh 'docker --version'
                 sh "docker build -f /home/ubuntu/Project-Final/App/Dockerfile-flask -t flask-app /home/ubuntu/Project-Final/App"
             }
         }
 
         stage('Push Flask Image to Docker Hub') {
             steps {
-                withCredentials([string(credentialsId: 'DOCKER_TOKEN', variable: 'DOCKER_TOKEN')]) {
-                    sh "echo 'DOCKER_TOKEN' | docker login -u avihay1997 --password-stdin"
+                withCredentials([string(credentialsId: 'DOCKER_HUB_TOKEN', variable: 'DOCKER_TOKEN')]) {
+                    sh "echo 'DOCKER_HUB_TOKEN' | docker login -u avihay1997 --password-stdin"
                     sh "docker push flask-app"
                 }
             }
