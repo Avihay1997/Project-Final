@@ -74,7 +74,7 @@ pipeline {
         stage('Push Flask Image to Docker Hub') {
             steps {
                 withCredentials([string(credentialsId: 'DOCKER_HUB_TOKEN', variable: 'DOCKER_TOKEN')]) {
-                    sh "echo \$DOCKER_TOKEN | docker login -u avihay1997 --password-stdin"
+                    sh "echo DOCKER_HUB_TOKEN | docker login -u avihay1997 --password-stdin"
                     sh "docker push flask-app"
                 }
             }
