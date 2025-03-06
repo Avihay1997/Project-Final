@@ -17,6 +17,7 @@ pipeline {
         ROOT_PASSWORD = credentials('root_password')
         DOCKER_REGISTRY = "docker.io"
         IMAGE_NAME = "docker.io/avihay1997/flask-app"
+        DOCKER_HUB_TOKEN = credentials('DOCKER_HUB_TOKEN')
     }
 
     stages {
@@ -65,6 +66,16 @@ pipeline {
             }
         }
 
+        stage('Login to Docker Hub') {
+            steps {
+                script {
+                    withCredentials([string(credentialsId: 'DOCKER_HUB_TOKEN', variable: 'DOCKER_HUB_TOKEN')]) {
+                        sh "docker login -u avihay1997 --password-stdin <<< ${DOCKER_HUB_TOKEN}"
+                    }
+                }
+            }
+        }
+
         stage('Build Flask Docker Image') {
             steps {
                 script {
@@ -75,8 +86,7 @@ pipeline {
 
         stage('Push Flask Image to Docker Hub') {
             steps {
-                withCredentials([string(credentialsId: 'DOCKER_HUB_TOKEN', variable: 'DOCKER_HUB_TOKEN')]) {
-                    sh "echo ${DOCKER_HUB_TOKEN} | docker login -u avihay1997 --password-stdin"
+                script {
                     sh "docker push flask-app"
                 }
             }
