@@ -70,7 +70,9 @@ pipeline {
             steps {
                 script {
                     withCredentials([string(credentialsId: 'DOCKER_HUB_TOKEN', variable: 'DOCKER_HUB_TOKEN')]) {
-                        sh "docker login -u avihay1997 --password-stdin <<< ${DOCKER_HUB_TOKEN}"
+                        sh '''
+                        echo "${DOCKER_HUB_TOKEN} | docker login -u avihay1997 --password-stdin"
+                        '''
                     }
                 }
             }
