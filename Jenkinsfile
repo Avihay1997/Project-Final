@@ -102,7 +102,7 @@ pipeline {
                                                        keyFileVariable: 'SSH_KEY', 
                                                        usernameVariable: 'ubuntu')]) {
                         sh '''
-                        ssh -o StrictHostKeyChecking=no -i $SSH_KEY ubuntu@172.31.7.191 " \
+                        ssh -o StrictHostKeyChecking=no -i $SSH_KEY ubuntu@172.31.19.76 " \
                             echo \$DOCKER_HUB_TOKEN | docker login -u avihay1997 --password-stdin && \
                             docker pull avihay1997/flask-app:latest && \
                             docker stop flask-app || true && \
