@@ -11,9 +11,9 @@ pipeline {
         FLASK_IMAGE_NAME = "avihay1997/flask-app:latest"
         EC2_INSTANCE_ID = "i-0a16e2cee77eb8e88"
         EC2_REGION = "us-east-1"
-        EC2_PUBLIC_IP = "52.90.5.34"
-        EC2_PRIVATE_IP = "172.31.95.113"
-        EC2_FLASK_PRIVATE_IP = "172.31.7.191"
+        EC2_PUBLIC_IP = "54.209.227.109"
+        EC2_PRIVATE_IP = "172.31.34.9"
+        EC2_FLASK_PRIVATE_IP = "172.31.19.76"
         ROOT_PASSWORD = credentials('root_password')
         DOCKER_REGISTRY = "docker.io"
         IMAGE_NAME = "docker.io/avihay1997/flask-app"
