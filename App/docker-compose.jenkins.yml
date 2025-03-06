@@ -11,10 +11,12 @@ services:
     volumes:
       - jenkins_home:/var/jenkins_home
       - /var/run/docker.sock:/var/run/docker.sock
+      - /home/ubuntu/.ssh/private_key.pem:/home/ubuntu/.ssh/private_key.pem
     restart: always
     environment:
       - JAVA_OPTS="-Xmx2g -Xms512m"
     group_add:
       - 988
+
 volumes:
   jenkins_home:
