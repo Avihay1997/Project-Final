@@ -86,6 +86,14 @@ pipeline {
             }
         }
 
+        stage('Copy Project to Jenkins Container') {
+            steps {
+                script {
+                    sh "docker cp /home/ubuntu/Project-Final/App jenkins-server:/"
+                }
+            }
+        }
+       
         stage('Push Flask Image to Docker Hub') {
             steps {
                 script {
