@@ -70,9 +70,9 @@ pipeline {
             steps {
                 script {
                     withCredentials([string(credentialsId: 'DOCKER_HUB_TOKEN', variable: 'DOCKER_HUB_TOKEN')]) {
-                        sh '''
-                        echo "${DOCKER_HUB_TOKEN} | docker login -u avihay1997 --password-stdin"
-                        '''
+                        sh """
+                        echo "\$DOCKER_HUB_TOKEN" | docker login -u avihay1997 --password-stdin
+                        """
                     }
                 }
             }
@@ -81,7 +81,7 @@ pipeline {
         stage('Build Flask Docker Image') {
             steps {
                 script {
-                    sh "docker build -f /App/Dockerfile-flask -t flask-app /App"
+                    sh "docker build -f /App/Dockerfile-flask -t avihay1997/flask-app:latest /App"
                 }
             }
         }
@@ -89,7 +89,7 @@ pipeline {
         stage('Push Flask Image to Docker Hub') {
             steps {
                 script {
-                    sh "docker push flask-app"
+                    sh "docker push avihay1997/flask-app:latest"
                 }
             }
         }
@@ -99,11 +99,11 @@ pipeline {
                 script {
                     sh """
                     ssh -o StrictHostKeyChecking=no -i ${PEM_KEY} ubuntu@172.31.7.191 << EOF
-                    echo 'DockerToken' | docker login -u avihay1997 --password-stdin
-                    docker pull flask-app
+                    echo "\$DOCKER_HUB_TOKEN" | docker login -u avihay1997 --password-stdin
+                    docker pull avihay1997/flask-app:latest
                     docker stop flask-app || true
                     docker rm flask-app || true
-                    docker run -d --name flask-app -p 5000:5000 flask-app
+                    docker run -d --name flask-app -p 5000:5000 avihay1997/flask-app:latest
                     EOF
                     """
                 }
