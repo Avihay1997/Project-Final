@@ -10,5 +10,3 @@ services:
     environment:
       - FLASK_ENV=development
     restart: always
-    depends_on:
-      - jenkins
