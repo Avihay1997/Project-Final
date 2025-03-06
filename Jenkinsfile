@@ -15,6 +15,8 @@ pipeline {
         EC2_PRIVATE_IP = "172.31.95.113"
         EC2_FLASK_PRIVATE_IP = "172.31.7.191"
         ROOT_PASSWORD = credentials('root_password')
+        DOCKER_REGISTRY = "docker.io"
+        IMAGE_NAME = "docker.io/avihay1997/flask-app"
     }
 
     stages {
