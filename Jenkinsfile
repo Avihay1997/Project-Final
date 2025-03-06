@@ -11,7 +11,7 @@ pipeline {
         FLASK_IMAGE_NAME = "avihay1997/flask-app:latest"
         EC2_INSTANCE_ID = "i-0a16e2cee77eb8e88"
         EC2_REGION = "us-east-1"
-        EC2_PUBLIC_IP = "18.233.102.46"
+        EC2_PUBLIC_IP = "54.166.240.110"
         EC2_PRIVATE_IP = "172.31.95.113"
         EC2_FLASK_PRIVATE_IP = "172.31.7.191"
         ROOT_PASSWORD = credentials('root_password')
