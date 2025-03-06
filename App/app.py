@@ -50,14 +50,14 @@ def home():
 
 
 if __name__ == '__main__':
-    host = '52.90.5.34'
-    port = 80
+    host = '0.0.0.0'
+    port = 5000
     app.run(host=host, port=port)
 
     # Check if port 5000 is in use
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         if s.connect_ex(('localhost', port)) == 0:
-            print(f"Port {port} is in use. Trying port 5000...")
-            port = 5000  # Use fallback port
+            print(f"Port {port} is in use. Trying port 5001...")
+            port = 5001  # Use fallback port
 
     app.run(host=host, port=port, debug=True)
