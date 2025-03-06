@@ -78,14 +78,6 @@ pipeline {
             }
         }
 
-        stage('Build Flask Docker Image') {
-            steps {
-                script {
-                    sh "docker build -f /App/Dockerfile-flask -t avihay1997/flask-app:latest /App"
-                }
-            }
-        }
-
         stage('Copy Project to Jenkins Container') {
             steps {
                 script {
@@ -93,7 +85,16 @@ pipeline {
                 }
             }
         }
-       
+
+        stage('Build Flask Docker Image') {
+             stage
+                 steps {
+                     script {
+                         sh "docker build -f /App/Dockerfile-flask -t avihay1997/flask-app:latest /App"
+                }
+            }
+        }
+        
         stage('Push Flask Image to Docker Hub') {
             steps {
                 script {
