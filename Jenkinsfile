@@ -98,7 +98,7 @@ pipeline {
             steps {
                 script {
                     sh """
-                    ssh -o StrictHostKeyChecking=no -i ${PEM_KEY} ubuntu@172.31.7.191 << 'EOF'
+                    ssh -o StrictHostKeyChecking=no -i ${PEM_KEY} ubuntu@172.31.7.191 << EOF
                     echo "\$DOCKER_HUB_TOKEN" | docker login -u avihay1997 --password-stdin
                     docker pull avihay1997/flask-app:latest
                     docker stop flask-app || true
