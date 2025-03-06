@@ -18,6 +18,7 @@ pipeline {
         DOCKER_REGISTRY = "docker.io"
         IMAGE_NAME = "docker.io/avihay1997/flask-app"
         DOCKER_HUB_TOKEN = credentials('DOCKER_HUB_TOKEN')
+        MY_SSH_KEY = credentials('MY_SSH_KEY')
     }
 
     stages {
@@ -97,15 +98,19 @@ pipeline {
         stage('Deploy Flask on EC2 with Private IP') {
             steps {
                 script {
-                    sh """
-                    ssh -o StrictHostKeyChecking=no -i ${PEM_KEY} ubuntu@172.31.7.191 << EOF
-                    echo "\$DOCKER_HUB_TOKEN" | docker login -u avihay1997 --password-stdin
-                    docker pull avihay1997/flask-app:latest
-                    docker stop flask-app || true
-                    docker rm flask-app || true
-                    docker run -d --name flask-app -p 5000:5000 avihay1997/flask-app:latest
-                    EOF
-                    """
+                    withCredentials([sshUserPrivateKey(credentialsId: 'MY_SSH_KEY', 
+                                                       keyFileVariable: 'SSH_KEY', 
+                                                       usernameVariable: 'ubuntu')]) {
+                        sh '''
+                        ssh -o StrictHostKeyChecking=no -i $SSH_KEY ubuntu@172.31.7.191 << EOF
+                        echo "\$DOCKER_HUB_TOKEN" | docker login -u avihay1997 --password-stdin
+                        docker pull flask-app
+                        docker stop flask-app || true
+                        docker rm flask-app || true
+                        docker run -d --name flask-app -p 5000:5000 flask-app
+                        EOF
+                        '''
+                    }
                 }
             }
         }
