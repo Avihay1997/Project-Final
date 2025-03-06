@@ -104,10 +104,10 @@ pipeline {
                         sh '''
                         ssh -o StrictHostKeyChecking=no -i $SSH_KEY ubuntu@172.31.7.191 << EOF
                         echo "\$DOCKER_HUB_TOKEN" | docker login -u avihay1997 --password-stdin
-                        docker pull flask-app
+                        docker pull avihay1997/flask-app:latest
                         docker stop flask-app || true
                         docker rm flask-app || true
-                        docker run -d --name flask-app -p 5000:5000 flask-app
+                        docker run -d --name flask-app -p 5000:5000 avihay1997/flask-app:latest
                         EOF
                         '''
                     }
