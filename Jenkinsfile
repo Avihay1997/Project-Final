@@ -13,7 +13,7 @@ pipeline {
         EC2_REGION = "us-east-1"
         EC2_PUBLIC_IP = "35.173.134.29"
         EC2_PRIVATE_IP = "172.31.95.113"
-        EC2_FLASK_PRIVATE_IP = "172.31.95.113"
+        EC2_FLASK_PRIVATE_IP = "172.31.7.191"
         ROOT_PASSWORD = credentials('root_password')
         DOCKER_REGISTRY = "docker.io"
         IMAGE_NAME = "docker.io/avihay1997/flask-app"
@@ -102,7 +102,7 @@ pipeline {
                                                        keyFileVariable: 'SSH_KEY', 
                                                        usernameVariable: 'ubuntu')]) {
                         sh '''
-                        ssh -o StrictHostKeyChecking=no -i $SSH_KEY ubuntu@172.31.95.113 " \
+                        ssh -o StrictHostKeyChecking=no -i $SSH_KEY ubuntu@172.31.7.191 " \
                             echo \$DOCKER_HUB_TOKEN | docker login -u avihay1997 --password-stdin && \
                             docker pull avihay1997/flask-app:latest && \
                             docker stop flask-app || true && \
