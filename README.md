@@ -7,11 +7,10 @@ Develop a full CI/CD pipeline using *Jenkins, Docker, and GitHub* to automate th
 - *Docker & Dockerfile* (Containerization)  
 - *Jenkins* (CI/CD automation)  
 - *GitHub* (Source code management)  
-- *Python (Flask) / Node.js (Express)* (Simple web application)  
+- *Python (Flask, BeautifulSoup, Requests, Regex)* (Web app that scrapes movie data, processes it, and displays a dynamic list)  
 - *Nginx* (Reverse proxy for the deployed app)  
 - *AWS EC2 / DigitalOcean / Local Server* (Deployment)  
 
----
 
 ### *Steps to Implement:*  
 
